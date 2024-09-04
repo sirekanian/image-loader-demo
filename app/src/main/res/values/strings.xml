@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ImgLoader</string>
+    <string name="main_screen_title">Image Loader Demo</string>
+    <string name="main_screen_subtitle">Glide (on the left) vs. ImgLoader (on the right)</string>
+    <string name="main_message_loading">Loading…</string>
+    <string name="main_message_error">Unexpected error occurred. Check your network connection.</string>
+</resources>
