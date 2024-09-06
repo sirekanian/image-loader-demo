@@ -16,6 +16,7 @@ import org.sirekanyan.imageloader.TAG
 import org.sirekanyan.imageloader.internal.extensions.MyLifecycleCallbacks
 import org.sirekanyan.imageloader.internal.extensions.decodeSampledBitmap
 import org.sirekanyan.imageloader.internal.extensions.hasUrlTag
+import org.sirekanyan.imageloader.internal.extensions.setImageResource
 import org.sirekanyan.imageloader.internal.extensions.setUrlTag
 import org.sirekanyan.imageloader.internal.extensions.toUuid
 import java.io.File
@@ -23,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
 
 internal interface ImageLoaderDelegate {
 
-    fun loadImage(url: String, view: ImageView, placeholder: Int, error: Int)
+    fun loadImage(url: String, view: ImageView, placeholder: Int?, error: Int?)
 }
 
 internal class ImageLoaderDelegateImpl(
@@ -48,7 +49,7 @@ internal class ImageLoaderDelegateImpl(
         supervisorJob.cancelChildren()
     }
 
-    override fun loadImage(url: String, view: ImageView, placeholder: Int, error: Int) {
+    override fun loadImage(url: String, view: ImageView, placeholder: Int?, error: Int?) {
         if (!isActivityStarted) {
             Log.w(TAG, "The image cannot be loaded before the activity is started")
             return

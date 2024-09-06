@@ -22,13 +22,19 @@ object ImageLoader {
     @JvmStatic
     fun loadImage(url: String, view: ImageView, placeholder: Int, error: Int) {
         checkMainThread()
-        checkRegistered()
-        delegate?.loadImage(url, view, placeholder, error)
+        val delegate = checkRegistered()
+        delegate.loadImage(url, view, placeholder, error)
     }
 
-    private fun checkRegistered() {
+    @JvmStatic
+    fun load(url: String): ImageLoaderBuilder {
+        checkMainThread()
+        val delegate = checkRegistered()
+        return ImageLoaderBuilder(delegate, url)
+    }
+
+    private fun checkRegistered(): ImageLoaderDelegate =
         checkNotNull(delegate) {
             "ImageLoader is not registered, call ImageLoader.register() from your Application class"
         }
-    }
 }
