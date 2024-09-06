@@ -14,6 +14,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.sirekanyan.imageloader.CACHE_LIFETIME
 import org.sirekanyan.imageloader.TAG
 import org.sirekanyan.imageloader.internal.extensions.MyLifecycleCallbacks
 import org.sirekanyan.imageloader.internal.extensions.decodeSampledBitmap
@@ -60,6 +61,11 @@ internal class ImageLoaderDelegateImpl(
             view.setImageResource(placeholder)
             view.setUrlTag(url)
             val bitmap = withContext(Dispatchers.IO) {
+                runCatching {
+                    cache.cleanup(CACHE_LIFETIME)
+                }.onFailure { exception ->
+                    Log.w(TAG, "Cannot cleanup cache", exception)
+                }
                 runCatching {
                     val uuid = url.toUuid()
                     val cached = cache.newFile(uuid)
