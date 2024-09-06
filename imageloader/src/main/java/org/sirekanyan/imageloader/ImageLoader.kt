@@ -3,12 +3,14 @@ package org.sirekanyan.imageloader
 import android.app.Application
 import android.widget.ImageView
 import androidx.annotation.CheckResult
+import androidx.annotation.Keep
 import org.sirekanyan.imageloader.internal.ImageCacheImpl
 import org.sirekanyan.imageloader.internal.ImageLoaderDelegate
 import org.sirekanyan.imageloader.internal.ImageLoaderDelegateImpl
 import org.sirekanyan.imageloader.internal.ImageRequesterImpl
 import org.sirekanyan.imageloader.internal.extensions.checkMainThread
 
+@Keep // todo: move to proguard file
 object ImageLoader {
 
     private var delegate: ImageLoaderDelegate? = null

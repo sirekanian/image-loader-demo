@@ -20,6 +20,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard.pro")
+            signingConfig = signingConfigs.getByName("debug") // todo: remove in real production
         }
     }
     compileOptions {
