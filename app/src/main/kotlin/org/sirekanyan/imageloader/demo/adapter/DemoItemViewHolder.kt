@@ -11,6 +11,7 @@ class DemoItemViewHolder(
 ) : ViewHolder(binding.root) {
 
     fun bind(model: DemoItemModel) {
+        binding.imageNumber.text = "${model.id}"
         Glide.with(binding.root.context)
             .load(model.imageUrl)
             .placeholder(R.drawable.ic_image_placeholder)
