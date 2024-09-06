@@ -1,6 +1,7 @@
 package org.sirekanyan.imageloader
 
 import android.widget.ImageView
+import androidx.annotation.CheckResult
 import androidx.annotation.DrawableRes
 import org.sirekanyan.imageloader.internal.ImageLoaderDelegate
 
@@ -12,11 +13,13 @@ class ImageLoaderBuilder internal constructor(
     private var placeholderResId: Int? = null
     private var errorResId: Int? = null
 
+    @CheckResult
     fun placeholder(@DrawableRes resourceId: Int): ImageLoaderBuilder {
         this.placeholderResId = resourceId
         return this
     }
 
+    @CheckResult
     fun error(@DrawableRes resourceId: Int): ImageLoaderBuilder {
         this.errorResId = resourceId
         return this

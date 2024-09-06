@@ -2,6 +2,7 @@ package org.sirekanyan.imageloader
 
 import android.app.Application
 import android.widget.ImageView
+import androidx.annotation.CheckResult
 import org.sirekanyan.imageloader.internal.ImageLoaderDelegate
 import org.sirekanyan.imageloader.internal.ImageLoaderDelegateImpl
 import org.sirekanyan.imageloader.internal.ImageRequesterImpl
@@ -27,6 +28,7 @@ object ImageLoader {
     }
 
     @JvmStatic
+    @CheckResult
     fun load(url: String): ImageLoaderBuilder {
         checkMainThread()
         val delegate = checkRegistered()
