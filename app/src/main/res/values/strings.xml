@@ -1,7 +1,15 @@
 <resources>
+
+    <!-- common -->
     <string name="app_name">ImgLoader</string>
     <string name="main_screen_title">Image Loader Demo</string>
     <string name="main_screen_subtitle">Glide (on the left) vs. ImgLoader (on the right)</string>
+
+    <!-- main message -->
     <string name="main_message_loading">Loading…</string>
     <string name="main_message_error">Unexpected error occurred. Check your network connection.</string>
+
+    <!-- clear cache -->
+    <string name="menu_item_clear_cache">Clear cache</string>
+    <string name="toast_clear_cache">Clearing cache…</string>
 </resources>

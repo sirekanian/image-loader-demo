@@ -13,9 +13,11 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/appToolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_toolbar_height"
         android:background="@color/app_toolbar_color"
+        app:menu="@menu/main"
         app:subtitle="@string/main_screen_subtitle"
         app:title="@string/main_screen_title" />
 

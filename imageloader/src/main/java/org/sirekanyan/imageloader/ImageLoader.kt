@@ -3,6 +3,7 @@ package org.sirekanyan.imageloader
 import android.app.Application
 import android.widget.ImageView
 import androidx.annotation.CheckResult
+import org.sirekanyan.imageloader.internal.ImageCacheImpl
 import org.sirekanyan.imageloader.internal.ImageLoaderDelegate
 import org.sirekanyan.imageloader.internal.ImageLoaderDelegateImpl
 import org.sirekanyan.imageloader.internal.ImageRequesterImpl
@@ -15,7 +16,7 @@ object ImageLoader {
     @JvmStatic
     fun register(app: Application) {
         checkMainThread()
-        val delegate = ImageLoaderDelegateImpl(app.cacheDir, ImageRequesterImpl())
+        val delegate = ImageLoaderDelegateImpl(ImageCacheImpl(app.cacheDir), ImageRequesterImpl())
         app.registerActivityLifecycleCallbacks(delegate)
         this.delegate = delegate
     }
@@ -33,6 +34,11 @@ object ImageLoader {
         checkMainThread()
         val delegate = checkRegistered()
         return ImageLoaderBuilder(delegate, url)
+    }
+
+    fun clearCache() {
+        checkMainThread()
+        delegate?.clearCache()
     }
 
     private fun checkRegistered(): ImageLoaderDelegate =

@@ -7,7 +7,9 @@ import io.ktor.util.cio.writeChannel
 import io.ktor.utils.io.copyAndClose
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
@@ -19,16 +21,16 @@ import org.sirekanyan.imageloader.internal.extensions.hasUrlTag
 import org.sirekanyan.imageloader.internal.extensions.setImageResource
 import org.sirekanyan.imageloader.internal.extensions.setUrlTag
 import org.sirekanyan.imageloader.internal.extensions.toUuid
-import java.io.File
 import kotlin.coroutines.CoroutineContext
 
 internal interface ImageLoaderDelegate {
 
     fun loadImage(url: String, view: ImageView, placeholder: Int?, error: Int?)
+    fun clearCache()
 }
 
 internal class ImageLoaderDelegateImpl(
-    private val cacheDir: File,
+    private val cache: ImageCache,
     private val requester: ImageRequester,
 ) : CoroutineScope, MyLifecycleCallbacks, ImageLoaderDelegate {
 
@@ -60,11 +62,11 @@ internal class ImageLoaderDelegateImpl(
             val bitmap = withContext(Dispatchers.IO) {
                 runCatching {
                     val uuid = url.toUuid()
-                    val cached = File(cacheDir, uuid)
+                    val cached = cache.newFile(uuid)
                     if (cached.exists()) {
                         decodeSampledBitmap(cached)
                     } else {
-                        val temp = File(cacheDir, "$uuid.tmp")
+                        val temp = cache.newFile("$uuid.tmp")
                         requester.request(url).copyAndClose(temp.writeChannel())
                         decodeSampledBitmap(temp).also {
                             if (it != null) {
@@ -82,6 +84,18 @@ internal class ImageLoaderDelegateImpl(
                 } else {
                     view.setImageBitmap(bitmap)
                 }
+            }
+        }
+    }
+
+    override fun clearCache() {
+        @OptIn(DelicateCoroutinesApi::class)
+        GlobalScope.launch {
+            try {
+                supervisorJob.cancelChildren()
+                cache.cleanup()
+            } catch (exception: Exception) {
+                Log.e(TAG, "Cannot clear cache", exception)
             }
         }
     }

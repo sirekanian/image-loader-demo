@@ -7,9 +7,11 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import org.sirekanyan.imageloader.ImageLoader
 import org.sirekanyan.imageloader.demo.adapter.DemoItemAdapter
 import org.sirekanyan.imageloader.demo.adapter.DemoItemModel
 import org.sirekanyan.imageloader.demo.databinding.MainActivityBinding
+import org.sirekanyan.imageloader.demo.extensions.showToast
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +24,12 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.demoRecyclerView.adapter = adapter
+        binding.appToolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.clear_image_cache -> onClearCacheClicked()
+                else -> false
+            }
+        }
     }
 
     override fun onStart() {
@@ -49,5 +57,11 @@ class MainActivity : AppCompatActivity() {
             binding.helloMessage.setText(hello)
         }
         adapter.submitList(items)
+    }
+
+    private fun onClearCacheClicked(): Boolean {
+        showToast(R.string.toast_clear_cache)
+        ImageLoader.clearCache()
+        return true
     }
 }
