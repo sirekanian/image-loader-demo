@@ -16,6 +16,11 @@ class DemoItemViewHolder(
             .placeholder(R.drawable.ic_image_placeholder)
             .error(R.drawable.ic_image_error)
             .into(binding.imageView1)
-        ImageLoader.loadImage(model.imageUrl, binding.imageView2)
+        ImageLoader.loadImage(
+            url = model.imageUrl,
+            view = binding.imageView2,
+            placeholder = R.drawable.ic_image_placeholder,
+            error = R.drawable.ic_image_error,
+        )
     }
 }

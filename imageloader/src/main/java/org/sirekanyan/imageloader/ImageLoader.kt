@@ -20,10 +20,10 @@ object ImageLoader {
     }
 
     @JvmStatic
-    fun loadImage(url: String, view: ImageView) {
+    fun loadImage(url: String, view: ImageView, placeholder: Int, error: Int) {
         checkMainThread()
         checkRegistered()
-        delegate?.loadImage(url, view)
+        delegate?.loadImage(url, view, placeholder, error)
     }
 
     private fun checkRegistered() {

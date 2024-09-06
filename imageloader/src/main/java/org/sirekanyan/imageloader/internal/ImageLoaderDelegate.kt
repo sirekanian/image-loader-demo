@@ -23,7 +23,7 @@ import kotlin.coroutines.CoroutineContext
 
 internal interface ImageLoaderDelegate {
 
-    fun loadImage(url: String, view: ImageView)
+    fun loadImage(url: String, view: ImageView, placeholder: Int, error: Int)
 }
 
 internal class ImageLoaderDelegateImpl(
@@ -48,30 +48,39 @@ internal class ImageLoaderDelegateImpl(
         supervisorJob.cancelChildren()
     }
 
-    override fun loadImage(url: String, view: ImageView) {
+    override fun loadImage(url: String, view: ImageView, placeholder: Int, error: Int) {
         if (!isActivityStarted) {
             Log.w(TAG, "The image cannot be loaded before the activity is started")
             return
         }
         launch {
-            view.setImageBitmap(null)
+            view.setImageResource(placeholder)
             view.setUrlTag(url)
             val bitmap = withContext(Dispatchers.IO) {
                 runCatching {
                     val uuid = url.toUuid()
                     val cached = File(cacheDir, uuid)
-                    if (!cached.exists()) {
+                    if (cached.exists()) {
+                        decodeSampledBitmap(cached)
+                    } else {
                         val temp = File(cacheDir, "$uuid.tmp")
                         requester.request(url).copyAndClose(temp.writeChannel())
-                        temp.renameTo(cached)
+                        decodeSampledBitmap(temp).also {
+                            if (it != null) {
+                                temp.renameTo(cached)
+                            }
+                        }
                     }
-                    decodeSampledBitmap(cached)
                 }.onFailure { exception ->
                     Log.e(TAG, "Cannot load bitmap", exception)
                 }.getOrNull()
             }
-            if (view.hasUrlTag(url) && bitmap != null) {
-                view.setImageBitmap(bitmap)
+            if (view.hasUrlTag(url)) {
+                if (bitmap == null) {
+                    view.setImageResource(error)
+                } else {
+                    view.setImageBitmap(bitmap)
+                }
             }
         }
     }
